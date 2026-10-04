@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>시세 데이터 갱신</title>
+<style>
+  body { margin: 0; padding: 48px 16px; font-family: "Malgun Gothic", sans-serif; background: #fafafa; color: #222; text-align: center; }
+  a.btn { display: inline-block; margin: 16px 0; padding: 14px 28px; border-radius: 8px; background: #c8102e; color: #fff; font-size: 18px; text-decoration: none; }
+  p { line-height: 1.6; }
+  .note { color: #777; font-size: 14px; }
+</style>
+</head>
+<body>
+  <h1>한우 시세 데이터 갱신</h1>
+  <p>"열기"를 확인하면 이 PC에서 업데이트(update_hanwoo_data.bat)가 시작됩니다.</p>
+  <a class="btn" href="hanwoo-update://run">▶ 업데이트 실행</a>
+  <p class="note">자동으로 열리지 않으면 위 버튼을 누르세요.<br>hanwoo-update 링크를 등록한 PC에서만 동작합니다. 이 창은 닫아도 됩니다.</p>
+  <script>location.href = "hanwoo-update://run";</script>
+</body>
+</html>
