@@ -117,6 +117,41 @@ details[open] summary { margin-bottom: 8px; }
 .fresh div { display: flex; justify-content: space-between; border-bottom: 1px solid var(--grid); padding-block: 5px; }
 .fresh span:last-child { font-variant-numeric: tabular-nums; color: var(--ink-2); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* 인쇄·PDF 버튼 */
+.print-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+.btn { font: inherit; font-size: var(--fs-sm); border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--ink-2);
+  padding: 5px 12px; cursor: pointer; text-decoration: none; }
+.btn:hover { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); }
+.print-only { display: none; }
+
+/* 인쇄용 (A4 세로): 항상 밝은 색, 조작줄·표 펼치기 숨김, 카드가 페이지 사이에서 잘리지 않게 */
+@page { size: A4 portrait; margin: 12mm 10mm; }
+@media print {
+  :root, :root[data-theme="dark"], :root:not([data-theme="light"]) {
+    --page: #ffffff; --surface: #ffffff; --ink: #161513; --ink-2: #55534d; --muted: #86837b;
+    --grid: #e4e2db; --axis: #c6c3b8; --border: rgba(22, 21, 19, 0.18);
+    --accent: #8a2f2a; --accent-soft: rgba(138, 47, 42, 0.08);
+    --series-1: #2a78d6; --series-2: #eb6834; --band: rgba(42, 120, 214, 0.15); --ship-band: rgba(138, 47, 42, 0.07);
+    --good-text: #006300; --warning-text: #8a5a00;
+    color-scheme: light;
+  }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-size: 10.5pt; }
+  .wrap { max-width: none; padding: 0; gap: 18px; }
+  .controls, details { display: none !important; }
+  .print-only { display: block; }
+  .grid-2, .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .panel, .tile { break-inside: avoid; padding: 10px 12px; }
+  .tile .v { font-size: 1.35rem; }
+  .tile .k, .tile .d { font-size: 8pt; }
+  .chip { font-size: 7pt; padding: 1px 6px; }
+  .chart { height: 210px; }
+  .chart.short { height: 150px; }
+  .section-head, h2 { break-after: avoid; }
+  section:has(#s-trust), section:has(#s-data) { break-inside: avoid; }
+}
 </style>
 
 </head>
@@ -144,7 +179,12 @@ details[open] summary { margin-bottom: 8px; }
         <button type="button" id="range-36" data-range="36">3년</button>
       </div>
     </div>
+    <div class="print-actions">
+      <button type="button" class="btn" id="print-btn">인쇄 / PDF 저장</button>
+      <a class="btn" href="hanwoo_market.pdf" download>PDF 내려받기</a>
+    </div>
   </div>
+  <p class="meta print-only" id="print-meta"></p>
 
   <section aria-labelledby="s-now">
     <div class="section-head"><h2 id="s-now">지금 시세와 전망</h2></div>
@@ -436,6 +476,7 @@ details[open] summary { margin-bottom: 8px; }
   function renderAll() {
     document.getElementById("horizon").value = state.h;
     document.getElementById("hval").textContent = state.h + "개월";
+    document.getElementById("print-meta").textContent = "예측 기간 " + state.h + "개월 기준 · 과거 표시 " + { all: "전체", 60: "5년", 36: "3년" }[state.range];
     document.querySelectorAll(".seg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.range === state.range)));
     if (window.Chart) {
       Chart.defaults.font.family = tok("--font");
@@ -449,10 +490,49 @@ details[open] summary { margin-bottom: 8px; }
   document.getElementById("horizon").addEventListener("input", (e) => { state.h = Number(e.target.value); save(); renderAll(); });
   document.querySelectorAll(".seg button").forEach((b) => b.addEventListener("click", () => { state.range = b.dataset.range; save(); renderAll(); }));
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
-  new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  const themeObserver = new MutationObserver(renderAll);
+  const watchTheme = () => themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  watchTheme();
+
+  // 인쇄: 인쇄 레이아웃은 beforeprint 시점에 아직 적용 전이라 A4 기준 크기를 직접 지정
+  // (A4 세로, 좌우 여백 10mm → 본문 폭 약 718px, 2열 패널 간격 10px, 패널 안쪽 여백·테두리 26px — 아래 @media print 와 맞춤)
+  const PRINT_W = 718;
+  function sizeForPrint() {
+    Object.values(charts).forEach((c) => {
+      const box = c.canvas.parentElement;
+      const half = box.closest(".grid-2, .grid-3") !== null;
+      const w = Math.floor(half ? (PRINT_W - 10) / 2 - 26 : PRINT_W - 26);
+      if (half) { c.options.scales.x.ticks.maxTicksLimit = 4; c.update("none"); }  // 좁은 차트는 날짜 눈금이 붙지 않게
+      c.resize(w, box.classList.contains("short") ? 150 : 210);
+    });
+  }
+  // 테마 바꿀 때 관찰자가 다시 그리면 인쇄 크기가 풀리므로 잠시 끊었다가 다시 연결
+  function lightForPrint() {
+    themeObserver.disconnect();
+    const before = document.documentElement.getAttribute("data-theme");
+    document.documentElement.setAttribute("data-theme", "light");
+    renderAll();
+    sizeForPrint();
+    return before;
+  }
+  let themeBeforePrint = null;
+  window.addEventListener("beforeprint", () => { themeBeforePrint = lightForPrint(); });
+  window.addEventListener("afterprint", () => {
+    if (themeBeforePrint === null) document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", themeBeforePrint);
+    renderAll();
+    watchTheme();
+  });
+  document.getElementById("print-btn").addEventListener("click", () => window.print());
 
   renderStatic();
-  renderAll();
+  // ?pdf : 월간 배치가 PDF 파일을 만들 때 (기본 보기 12개월·전체, 밝은 색, A4 크기 차트)
+  if (new URLSearchParams(location.search).has("pdf")) {
+    state.h = 12; state.range = "all";
+    lightForPrint();
+  } else {
+    renderAll();
+  }
 })();
 </script>
 
