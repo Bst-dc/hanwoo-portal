@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>한우 업무 포털</title>
+<meta name="description" content="시험농장 ERP, 한우 스마트컨설팅, 한우 시세전망 바로가기">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: 제목 → 시스템 카드 3개(넓으면 3열, 좁으면 1열) → 이용 안내 */
+:root {
+  --page: #f4f3ef;
+  --surface: #fcfcfb;
+  --ink: #161513;
+  --ink-2: #55534d;
+  --muted: #86837b;
+  --line: #e4e2db;
+  --border: rgba(22, 21, 19, 0.10);
+  --accent: #8a2f2a;
+  --accent-soft: rgba(138, 47, 42, 0.08);
+  --font: "IBM Plex Sans KR", system-ui, -apple-system, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #0f0f0e; --surface: #1a1a19; --ink: #f3f2ed; --ink-2: #c3c2b7; --muted: #8f8c84;
+    --line: #2c2c2a; --border: rgba(255, 255, 255, 0.10); --accent: #e48a80; --accent-soft: rgba(228, 138, 128, 0.12);
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--page); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.6;
+  min-height: 100vh; display: grid; align-items: center; }
+.wrap { width: 100%; max-width: 1040px; margin: 0 auto; padding-inline: 20px; padding-block: 48px; display: grid; gap: 32px; }
+header { display: grid; gap: 6px; }
+.eyebrow { font-size: 12px; letter-spacing: 0.08em; color: var(--accent); font-weight: 600; }
+h1 { margin: 0; font-size: clamp(26px, 4vw, 34px); font-weight: 700; letter-spacing: -0.01em; text-wrap: balance; }
+.lede { margin: 0; color: var(--ink-2); max-width: 60ch; }
+.cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); }
+a.card { display: grid; grid-template-rows: auto auto 1fr auto; gap: 10px; text-decoration: none; color: inherit;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px 22px 18px;
+  transition: border-color 0.15s, transform 0.15s; }
+a.card:hover { border-color: var(--accent); transform: translateY(-2px); }
+a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.tag { font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 2px 10px; width: fit-content; }
+.card h2 { margin: 0; font-size: 20px; font-weight: 600; }
+.card ul { margin: 0; padding-left: 18px; color: var(--ink-2); font-size: 14px; display: grid; gap: 2px; }
+.foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
+  border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px; font-size: 13px; }
+.foot .note { color: var(--muted); }
+.foot .go { color: var(--accent); font-weight: 600; white-space: nowrap; }
+.help { color: var(--muted); font-size: 13px; display: grid; gap: 4px; }
+.help p { margin: 0; }
+@media (prefers-reduced-motion: reduce) { a.card { transition: none; } a.card:hover { transform: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">시험농장 · 컨설팅 · 시세</span>
+    <h1>한우 업무 포털</h1>
+    <p class="lede">사용할 시스템을 고르세요. 각 시스템은 따로 운영되며, 들어가면 해당 시스템의 로그인 화면이 나옵니다.</p>
+  </header>
+
+  <nav class="cards" aria-label="시스템 선택">
+    <a class="card" href="https://testfarm-npkhanj8fxh69lfasahgu5.streamlit.app/">
+      <span class="tag">ERP</span>
+      <h2>시험농장 관리</h2>
+      <ul>
+        <li>구미선산·구미고아 개체 입식·사육 관리</li>
+        <li>사료·품목 매입과 재고, 재고조사표</li>
+        <li>월말 비용 등록·원가 정산, 점검표</li>
+      </ul>
+      <div class="foot"><span class="note">비밀번호 필요</span><span class="go">들어가기 →</span></div>
+    </a>
+
+    <a class="card" href="https://hanwoo-smart-web-rfkwappjmj7yr4xv6ahuwes.streamlit.app/">
+      <span class="tag">컨설팅</span>
+      <h2>한우 스마트컨설팅</h2>
+      <ul>
+        <li>이력제 출하성적 자동 추출</li>
+        <li>전국 평균과 1:1 비교, 현장조사 입력</li>
+        <li>AI 종합 진단 리포트</li>
+      </ul>
+      <div class="foot"><span class="note">농가 정보 보호</span><span class="go">들어가기 →</span></div>
+    </a>
+
+    <a class="card" href="market/">
+      <span class="tag">시세</span>
+      <h2>한우 시세전망</h2>
+      <ul>
+        <li>거세우·암소 평균 경락가 추이</li>
+        <li>1~24개월 가격 예측과 신뢰도</li>
+        <li>출생 기반 공급 전망, 시장 지표</li>
+      </ul>
+      <div class="foot"><span class="note">매월 자동 갱신</span><span class="go">보기 →</span></div>
+    </a>
+  </nav>
+
+  <div class="help">
+    <p>시험농장 관리와 한우 스마트컨설팅은 한동안 아무도 쓰지 않으면 잠들어 있어, 처음 열 때 30초~1분 정도 기다려야 할 수 있습니다.</p>
+    <p>휴대폰 홈 화면에 이 페이지를 추가해 두면 앱처럼 바로 열 수 있습니다.</p>
+  </div>
+</div>
+</body>
+</html>
