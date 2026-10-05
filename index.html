@@ -11,84 +11,118 @@
 <style>
 /* Layout: 제목 → 시스템 카드 3개(넓으면 3열, 좁으면 1열) → 이용 안내 */
 :root {
-  --page: #f4f3ef;
-  --surface: #fcfcfb;
-  --ink: #161513;
-  --ink-2: #55534d;
-  --muted: #86837b;
-  --line: #e4e2db;
-  --border: rgba(22, 21, 19, 0.10);
-  --accent: #8a2f2a;
-  --accent-soft: rgba(138, 47, 42, 0.08);
-  --font: "IBM Plex Sans KR", system-ui, -apple-system, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --page-bg-1: #eef2f3;
+  --page-bg-2: #fcfcfb;
+  --page-bg-3: #f3eaea;
+  --surface: rgba(255, 255, 255, 0.65);
+  --ink: #1f2937;
+  --ink-2: #4b5563;
+  --muted: #9ca3af;
+  --line: rgba(31, 41, 55, 0.08);
+  --border: rgba(255, 255, 255, 0.8);
+  --accent: #059669;
+  --accent-soft: rgba(5, 150, 105, 0.1);
+  --font: "IBM Plex Sans KR", system-ui, -apple-system, sans-serif;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --page: #0f0f0e; --surface: #1a1a19; --ink: #f3f2ed; --ink-2: #c3c2b7; --muted: #8f8c84;
-    --line: #2c2c2a; --border: rgba(255, 255, 255, 0.10); --accent: #e48a80; --accent-soft: rgba(228, 138, 128, 0.12);
+    --page-bg-1: #0f172a;
+    --page-bg-2: #1e293b;
+    --page-bg-3: #111827;
+    --surface: rgba(30, 41, 59, 0.65);
+    --ink: #f8fafc;
+    --ink-2: #cbd5e1;
+    --muted: #64748b;
+    --line: rgba(255, 255, 255, 0.1);
+    --border: rgba(255, 255, 255, 0.1);
+    --accent: #34d399;
+    --accent-soft: rgba(52, 211, 153, 0.15);
     color-scheme: dark;
   }
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
-body { background: var(--page); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.6;
-  min-height: 100vh; display: grid; align-items: center; }
-.wrap { width: 100%; max-width: 1040px; margin: 0 auto; padding-inline: 20px; padding-block: 48px; display: grid; gap: 32px; }
-header { display: grid; gap: 6px; }
-.eyebrow { font-size: 12px; letter-spacing: 0.08em; color: var(--accent); font-weight: 600; }
-h1 { margin: 0; font-size: clamp(26px, 4vw, 34px); font-weight: 700; letter-spacing: -0.01em; text-wrap: balance; }
-.lede { margin: 0; color: var(--ink-2); max-width: 60ch; }
-.cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); }
-a.card { display: grid; grid-template-rows: auto auto 1fr auto; gap: 10px; text-decoration: none; color: inherit;
-  background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px 22px 18px;
-  transition: border-color 0.15s, transform 0.15s; }
-a.card:hover { border-color: var(--accent); transform: translateY(-2px); }
+body { 
+  background: linear-gradient(135deg, var(--page-bg-1) 0%, var(--page-bg-2) 50%, var(--page-bg-3) 100%);
+  background-attachment: fixed;
+  color: var(--ink); 
+  font-family: var(--font); 
+  font-size: 15px; 
+  line-height: 1.6;
+  min-height: 100vh; 
+  display: grid; 
+  align-items: start; 
+}
+.wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding-inline: 24px; padding-block: 56px; display: grid; gap: 32px; }
+
+/* Glassmorphism common styles */
+.glass-panel {
+  background: var(--surface);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+}
+
+header { display: flex; flex-direction: column; gap: 8px; padding: 32px; }
+.eyebrow { font-size: 13px; letter-spacing: 0.1em; color: var(--accent); font-weight: 600; text-transform: uppercase; }
+h1 { margin: 0; font-size: clamp(28px, 4vw, 36px); font-weight: 700; letter-spacing: -0.02em; text-wrap: balance; }
+.lede { margin: 0; color: var(--ink-2); max-width: 65ch; font-size: 16px; }
+
+.cards { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+a.card { display: grid; grid-template-rows: auto auto 1fr auto; gap: 12px; text-decoration: none; color: inherit; padding: 28px; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+a.card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 12px 48px rgba(0, 0, 0, 0.08); }
 a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.tag { font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 2px 10px; width: fit-content; }
-.card h2 { margin: 0; font-size: 20px; font-weight: 600; }
-.card ul { margin: 0; padding-left: 18px; color: var(--ink-2); font-size: 14px; display: grid; gap: 2px; }
-.foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
-  border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px; font-size: 13px; }
+.tag { font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 4px 12px; width: fit-content; }
+.card h2 { margin: 0; font-size: 22px; font-weight: 600; }
+.card ul { margin: 0; padding-left: 20px; color: var(--ink-2); font-size: 14.5px; display: grid; gap: 6px; }
+.foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 16px; margin-top: 8px; font-size: 13.5px; }
 .foot .note { color: var(--muted); }
 .foot .go { color: var(--accent); font-weight: 600; white-space: nowrap; }
-.help { color: var(--muted); font-size: 13px; display: grid; gap: 4px; }
-.help p { margin: 0; }
-.market-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; display: grid; gap: 16px; }
-.market-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
-.market-header h2 { margin: 0; font-size: 18px; font-weight: 600; }
-.table-wrap { overflow-x: auto; }
-.h7d { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
-.h7d th, .h7d td { padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-.h7d thead th { background: var(--page); color: var(--ink-2); font-weight: 600; }
-.h7d tbody th { font-weight: 600; vertical-align: top; }
+
+.market-section { padding: 32px; display: grid; gap: 24px; }
+.market-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+.market-header h2 { margin: 0; font-size: 20px; font-weight: 600; }
+
+.table-wrap { overflow-x: auto; border-radius: 12px; }
+.h7d { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+.h7d th, .h7d td { padding: 12px 16px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.h7d thead th { background: rgba(0,0,0,0.02); color: var(--ink-2); font-weight: 600; border-bottom: 2px solid var(--line); }
+.h7d tbody th { font-weight: 600; vertical-align: middle; }
 .h7d tr.group > * { border-top: 2px solid var(--line); }
 .h7d .num { text-align: right; font-variant-numeric: tabular-nums; }
 .h7d .c-closed, .h7d .c-none, .h7d .c-missing { color: var(--muted); }
-.h7d .c-error { color: var(--accent); font-weight: 600; }
+.h7d .c-error { color: #ef4444; font-weight: 600; }
 .h7d .few { color: var(--muted); }
-.h7d .cnt { font-size: 11px; color: var(--muted); }
-.h7d-controls { display: flex; flex-wrap: wrap; gap: 8px 16px; }
-.h7d-seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-.h7d-seg button { font: inherit; font-size: 13px; padding: 6px 14px; border: 0; background: var(--surface); color: var(--ink-2); cursor: pointer; }
-.h7d-seg button + button { border-left: 1px solid var(--border); }
-.h7d-seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
-.h7d-seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-.h7d-msg { margin: 0; padding: 16px 0; color: var(--muted); text-align: center; }
-.h7d-meta { margin: 0; color: var(--muted); font-size: 12px; }
-@media (prefers-reduced-motion: reduce) { a.card { transition: none; } a.card:hover { transform: none; } }
+.h7d .cnt { font-size: 12px; color: var(--muted); margin-left: 4px; }
+
+.h7d-controls { display: flex; flex-wrap: wrap; gap: 12px 16px; }
+.h7d-seg { display: inline-flex; background: rgba(255,255,255,0.4); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; padding: 4px; gap: 4px;}
+@media (prefers-color-scheme: dark) { .h7d-seg { background: rgba(0,0,0,0.2); } }
+.h7d-seg button { font: inherit; font-size: 14px; padding: 6px 16px; border: 0; border-radius: 8px; background: transparent; color: var(--ink-2); cursor: pointer; transition: all 0.2s; }
+.h7d-seg button[aria-pressed="true"] { background: var(--surface); color: var(--accent); font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.h7d-seg button:focus-visible { outline: 2px solid var(--accent); }
+
+.h7d-msg { margin: 0; padding: 32px 0; color: var(--muted); text-align: center; font-size: 15px; }
+.h7d-meta { margin: 0; color: var(--muted); font-size: 12.5px; text-align: right; }
+
+.help { color: var(--muted); font-size: 13.5px; display: grid; gap: 6px; text-align: center; margin-top: 16px; }
+.help p { margin: 0; }
+@media (prefers-reduced-motion: reduce) { a.card, .h7d-seg button { transition: none; } a.card:hover { transform: none; } }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
+  <header class="glass-panel">
     <span class="eyebrow">시험농장 · 컨설팅 · 시세</span>
     <h1>한우 업무 포털</h1>
     <p class="lede">사용할 시스템을 고르세요. 각 시스템은 따로 운영되며, 들어가면 해당 시스템의 로그인 화면이 나옵니다.</p>
   </header>
 
   <nav class="cards" aria-label="시스템 선택">
-    <a class="card" href="https://testfarm-npkhanj8fxh69lfasahgu5.streamlit.app/">
+    <a class="card glass-panel" href="https://testfarm-npkhanj8fxh69lfasahgu5.streamlit.app/">
       <span class="tag">ERP</span>
       <h2>시험농장 관리</h2>
       <ul>
@@ -99,7 +133,7 @@ a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
       <div class="foot"><span class="note">비밀번호 필요</span><span class="go">들어가기 →</span></div>
     </a>
 
-    <a class="card" href="https://hanwoo-smart-web-rfkwappjmj7yr4xv6ahuwes.streamlit.app/">
+    <a class="card glass-panel" href="https://hanwoo-smart-web-rfkwappjmj7yr4xv6ahuwes.streamlit.app/">
       <span class="tag">컨설팅</span>
       <h2>한우 스마트컨설팅</h2>
       <ul>
@@ -110,7 +144,7 @@ a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
       <div class="foot"><span class="note">농가 정보 보호</span><span class="go">들어가기 →</span></div>
     </a>
 
-    <a class="card" href="market/">
+    <a class="card glass-panel" href="market/">
       <span class="tag">시세</span>
       <h2>한우 시세전망</h2>
       <ul>
@@ -122,7 +156,7 @@ a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
     </a>
   </nav>
 
-  <section class="market-section" id="hanwoo7d" aria-labelledby="h7d-title">
+  <section class="market-section glass-panel" id="hanwoo7d" aria-labelledby="h7d-title">
     <div class="market-header">
       <h2 id="h7d-title">한우 등급별 경락가</h2>
       <span class="eyebrow">축산물품질평가원 제공</span>
