@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- 사용자가 브라우저로 받은 2026-10-03(토) 음성 거세 응답의 1++B 행을 그대로 옮긴 것(휴장일 모양 확인용, 일부 행만) -->
+<response><header><resultCode>00</resultCode><resultMsg>NORMAL SERVICE.</resultMsg></header><body><items>
+<item><endYmd>20261003</endYmd><gradeCd>0B</gradeCd><gradeNm>1++B</gradeNm><gradeType>A</gradeType><judgeBreedCd>024001</judgeBreedCd><judgeBreedNm>한우</judgeBreedNm><judgeSexCd>025003</judgeSexCd><judgeSexNm>거세</judgeSexNm><startYmd>20261003</startYmd></item>
+</items></body></response>

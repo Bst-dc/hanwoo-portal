@@ -54,6 +54,28 @@ a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .foot .go { color: var(--accent); font-weight: 600; white-space: nowrap; }
 .help { color: var(--muted); font-size: 13px; display: grid; gap: 4px; }
 .help p { margin: 0; }
+.market-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; display: grid; gap: 16px; }
+.market-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+.market-header h2 { margin: 0; font-size: 18px; font-weight: 600; }
+.table-wrap { overflow-x: auto; }
+.h7d { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+.h7d th, .h7d td { padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.h7d thead th { background: var(--page); color: var(--ink-2); font-weight: 600; }
+.h7d tbody th { font-weight: 600; vertical-align: top; }
+.h7d tr.group > * { border-top: 2px solid var(--line); }
+.h7d .num { text-align: right; font-variant-numeric: tabular-nums; }
+.h7d .c-closed, .h7d .c-none, .h7d .c-missing { color: var(--muted); }
+.h7d .c-error { color: var(--accent); font-weight: 600; }
+.h7d .few { color: var(--muted); }
+.h7d .cnt { font-size: 11px; color: var(--muted); }
+.h7d-controls { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.h7d-seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.h7d-seg button { font: inherit; font-size: 13px; padding: 6px 14px; border: 0; background: var(--surface); color: var(--ink-2); cursor: pointer; }
+.h7d-seg button + button { border-left: 1px solid var(--border); }
+.h7d-seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.h7d-seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.h7d-msg { margin: 0; padding: 16px 0; color: var(--muted); text-align: center; }
+.h7d-meta { margin: 0; color: var(--muted); font-size: 12px; }
 @media (prefers-reduced-motion: reduce) { a.card { transition: none; } a.card:hover { transform: none; } }
 </style>
 </head>
@@ -100,10 +122,22 @@ a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
     </a>
   </nav>
 
+  <section class="market-section" id="hanwoo7d" aria-labelledby="h7d-title">
+    <div class="market-header">
+      <h2 id="h7d-title">최근 7일 한우 등급별 경락가</h2>
+      <span class="eyebrow">축산물품질평가원 제공</span>
+    </div>
+    <div class="h7d-controls" data-h7d-controls></div>
+    <div class="table-wrap" data-h7d-table><p class="h7d-msg">시세를 불러오는 중입니다…</p></div>
+    <p class="h7d-meta" data-h7d-meta></p>
+  </section>
+
   <div class="help">
     <p>시험농장 관리와 한우 스마트컨설팅은 한동안 아무도 쓰지 않으면 잠들어 있어, 처음 열 때 30초~1분 정도 기다려야 할 수 있습니다.</p>
     <p>휴대폰 홈 화면에 이 페이지를 추가해 두면 앱처럼 바로 열 수 있습니다.</p>
   </div>
 </div>
+<script src="js/hanwoo-7d.js"></script>
+<script>Hanwoo7d.load(document.getElementById('hanwoo7d'));</script>
 </body>
 </html>

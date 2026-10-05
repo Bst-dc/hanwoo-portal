@@ -1,0 +1,5 @@
+# 1단계 검사 때 받은 원본 응답과 API 가이드 문서 (테스트용 원본은 scripts/fixtures/에 있음)
+raw_*.xml
+*.docx
+__pycache__/
+data/*.tmp

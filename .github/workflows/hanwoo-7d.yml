@@ -1,0 +1,44 @@
+name: 한우 7일 시세 갱신
+
+on:
+  schedule:
+    - cron: "30 1 * * *"   # 매일 10:30 KST (전날 시세가 10시경 올라온다)
+    - cron: "0 5 * * *"    # 매일 14:00 KST (업로드가 늦은 날 다시 받기)
+  workflow_dispatch:        # Actions 탭에서 수동 실행
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hanwoo-7d
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 테스트 (실패하면 수집하지 않음)
+        run: |
+          python scripts/test_fetch_prices.py
+          node scripts/test_hanwoo_7d.js
+
+      - name: 시세 수집
+        env:
+          EKAPE_KEY: ${{ secrets.EKAPE_KEY }}
+        run: python scripts/fetch_prices.py
+
+      - name: 변경 시 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898729+github-actions[bot]@users.noreply.github.com"
+          git add data/hanwoo_7d.json
+          if git diff --cached --quiet; then echo "변경 없음"; exit 0; fi
+          git commit -m "한우 7일 시세 자동 갱신 $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')"
+          git push
