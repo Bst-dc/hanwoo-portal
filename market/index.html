@@ -250,7 +250,7 @@ details[open] summary { margin-bottom: 8px; }
         <details><summary>표로 보기</summary><div class="table-wrap" id="t-importPrice"></div></details></div>
       <div class="panel"><h3>소비자심리지수</h3><p class="sub">한국은행, 100보다 크면 장기평균보다 낙관적</p><div class="chart short"><canvas id="c-csi" aria-label="소비자심리지수 추이" role="img"></canvas></div>
         <details><summary>표로 보기</summary><div class="table-wrap" id="t-csi"></div></details></div>
-      <div class="panel"><h3>송아지 시세</h3><p class="sub">가축시장 산지가격, 6~7개월령 (만원/두) · 통계누리 2023년부터, 2023년 11~12월은 원자료 없음</p><div class="chart short"><canvas id="c-calf" aria-label="한우 수송아지·암송아지 산지가격 추이" role="img"></canvas></div>
+      <div class="panel"><h3>송아지 시세</h3><p class="sub">가축시장 산지가격, 6~7개월령 (만원/두) · 통계누리 2023년부터, 점선 구간(2023년 11~12월)은 원자료가 없어 앞뒤를 이은 것</p><div class="chart short"><canvas id="c-calf" aria-label="한우 수송아지·암송아지 산지가격 추이" role="img"></canvas></div>
         <details><summary>표로 보기</summary><div class="table-wrap" id="t-calf"></div></details></div>
     </div>
   </section>
@@ -483,9 +483,11 @@ details[open] summary { margin-bottom: 8px; }
     if (!c || !c.labels.length) return;
     const opts = baseOptions((v) => fmt(v), (v) => fmt(v) + "만원");
     opts.scales.x.ticks.maxTicksLimit = 4;
+    // 원자료가 없는 달(2023-11·12)은 앞뒤를 점선으로 이음 — 실제 값이 아님을 구분
+    const gapDash = { borderDash: (ctx) => (ctx.p0.skip || ctx.p1.skip ? [4, 4] : undefined) };
     draw("c-calf", { type: "line", data: { labels: c.labels, datasets: [
-      { label: "수송아지", data: c["수"], borderColor: tok("--series-1"), backgroundColor: tok("--series-1"), spanGaps: false },
-      { label: "암송아지", data: c["암"], borderColor: tok("--series-2"), backgroundColor: tok("--series-2"), spanGaps: false },
+      { label: "수송아지", data: c["수"], borderColor: tok("--series-1"), backgroundColor: tok("--series-1"), spanGaps: true, segment: gapDash },
+      { label: "암송아지", data: c["암"], borderColor: tok("--series-2"), backgroundColor: tok("--series-2"), spanGaps: true, segment: gapDash },
     ] }, options: opts });
     document.getElementById("t-calf").innerHTML = table(["월", "수송아지(만원)", "암송아지(만원)"],
       c.labels.slice(-12).map((l, i) => [l, fmt(c["수"].slice(-12)[i]), fmt(c["암"].slice(-12)[i])]));
