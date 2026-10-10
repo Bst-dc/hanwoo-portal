@@ -1,0 +1,52 @@
+/* 한우 업무 시스템 공통 디자인 기준 (포털·시험농장·스마트컨설팅·시세전망)
+   - 밝은 화면 고정 (다크 모드 없음)
+   - 글꼴 Pretendard, 바탕·글자·테두리·모서리는 네 곳이 같고, 앱마다 강조색(--accent) 하나만 다르다.
+   - Streamlit 두 앱과 시세전망 대시보드는 이 파일을 불러오지 못하는 곳이 있어 같은 값을 직접 넣어 쓴다.
+     값을 바꾸면 아래 네 곳도 함께 바꿀 것:
+       시험농장/.streamlit/config.toml · erp_ui.py(APP_THEME_CSS)
+       한우_스마트컨설팅_웹시스템/.streamlit/config.toml · streamlit_app.py
+       한우데이터분석 웹시스템/dashboard/template.html */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+:root {
+  color-scheme: light;
+  --page: #F6F5F1;       /* 바탕 */
+  --surface: #FFFFFF;    /* 카드 */
+  --surface-2: #F0EEE8;  /* 보조 바탕·표 머리·옆 메뉴 */
+  --line: #E2DFD6;       /* 테두리 */
+  --ink: #1E1F1C;        /* 글자 */
+  --ink-2: #4A4B45;      /* 보조 글자 */
+  --muted: #77766E;      /* 흐린 글자 */
+  --danger: #B42318;     /* 경고·오류 */
+  --series-1: #2A78D6;   /* 그래프 1번 계열 */
+  --series-2: #D95926;   /* 그래프 2번 계열 */
+  --series-ref: #A8A69D; /* 기준선 */
+  --radius: 12px;        /* 카드 */
+  --radius-sm: 8px;      /* 입력·버튼 */
+  --font: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+
+  /* 앱별 강조색 */
+  --portal: #047857;  --portal-soft: #E1F3EC;
+  --farm: #8A5A2B;    --farm-soft: #F3EBE2;
+  --consult: #2E6B57; --consult-soft: #E6F0EC;
+  --market: #8A2F2A;  --market-soft: #F5E6E4;
+
+  --accent: var(--portal);
+  --accent-soft: var(--portal-soft);
+}
+
+/* 공통 머리글: [앱 표시] 한우 업무 포털 / 앱 이름 ······ 시험농장 · 스마트컨설팅 · 시세전망 */
+.hw-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px;
+  min-height: 64px; box-sizing: border-box; padding: 12px 24px; background: var(--surface);
+  border-bottom: 1px solid var(--line); font-family: var(--font); }
+.hw-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.hw-mark { width: 32px; height: 32px; flex-shrink: 0; border-radius: var(--radius-sm); background: var(--accent);
+  color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; }
+.hw-portal { font-size: 14px; color: var(--muted); text-decoration: none; }
+.hw-portal:hover { color: var(--ink); }
+.hw-sep { color: var(--series-ref); }
+.hw-app { font-size: 17px; font-weight: 700; color: var(--ink); }
+.hw-nav { display: flex; gap: 20px; font-size: 14px; font-weight: 500; }
+.hw-nav a { color: var(--ink-2); text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
+.hw-nav a:hover { color: var(--ink); }
+.hw-nav a[aria-current="page"] { color: var(--accent); font-weight: 700; border-bottom-color: var(--accent); }
