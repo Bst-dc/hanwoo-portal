@@ -16,7 +16,7 @@ GitHub Pages 포털(`index.html`) 하단에 **음성·고령·부경 공판장�
 ## 2. 구조
 
 ```
-[GitHub Actions] 매일 10:30, 14:00 KST
+[GitHub Actions] 매일 08:13, 09:12, 10:17, 11:07, 12:23 KST (GitHub 지연 대비 5회)
    ├─ 테스트 (실패하면 수집 안 함)
    ├─ scripts/fetch_prices.py  ── http ──▶ 축평원 API (21일 × 3시장 × 2성별 = 126회)
    ├─ data/hanwoo_7d.json 원자적 저장 + 수집 요약을 Actions 화면에 출력
