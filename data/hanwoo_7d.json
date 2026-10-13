@@ -1,9 +1,8 @@
 {
  "dummy": false,
  "source": "축산물품질평가원 축산물등급판정정보 auct/cattlePriceDetail (결함포함가격)",
- "generatedAt": "2026-10-12T20:00:29+09:00",
+ "generatedAt": "2026-10-13T12:33:07+09:00",
  "dates": [
-  "20260921",
   "20260922",
   "20260923",
   "20260924",
@@ -23,7 +22,8 @@
   "20261008",
   "20261009",
   "20261010",
-  "20261011"
+  "20261011",
+  "20261012"
  ],
  "markets": [
   {
@@ -67,270 +67,6 @@
   "3C"
  ],
  "fetches": [
-  {
-   "date": "20260921",
-   "market": "0513",
-   "sex": "025003",
-   "status": "ok",
-   "grades": {
-    "1++A": {
-     "amt": 29613,
-     "cnt": 54
-    },
-    "1++B": {
-     "amt": 27579,
-     "cnt": 58
-    },
-    "1++C": {
-     "amt": 26365,
-     "cnt": 17
-    },
-    "1+A": {
-     "amt": 25404,
-     "cnt": 29
-    },
-    "1+B": {
-     "amt": 24458,
-     "cnt": 29
-    },
-    "1+C": {
-     "amt": 22010,
-     "cnt": 13
-    },
-    "1A": {
-     "amt": 23260,
-     "cnt": 23
-    },
-    "1B": {
-     "amt": 21963,
-     "cnt": 21
-    },
-    "1C": {
-     "amt": 21012,
-     "cnt": 6
-    },
-    "2A": {
-     "amt": 18299,
-     "cnt": 18
-    },
-    "2B": {
-     "amt": 18611,
-     "cnt": 3
-    },
-    "2C": null,
-    "3A": null,
-    "3B": null,
-    "3C": null
-   }
-  },
-  {
-   "date": "20260921",
-   "market": "0513",
-   "sex": "025001",
-   "status": "ok",
-   "grades": {
-    "1++A": {
-     "amt": 27880,
-     "cnt": 5
-    },
-    "1++B": {
-     "amt": 26785,
-     "cnt": 13
-    },
-    "1++C": {
-     "amt": 27316,
-     "cnt": 2
-    },
-    "1+A": {
-     "amt": 25336,
-     "cnt": 3
-    },
-    "1+B": {
-     "amt": 24306,
-     "cnt": 7
-    },
-    "1+C": {
-     "amt": 20269,
-     "cnt": 2
-    },
-    "1A": {
-     "amt": 21596,
-     "cnt": 10
-    },
-    "1B": {
-     "amt": 21262,
-     "cnt": 14
-    },
-    "1C": {
-     "amt": 19756,
-     "cnt": 6
-    },
-    "2A": {
-     "amt": 18123,
-     "cnt": 18
-    },
-    "2B": {
-     "amt": 17131,
-     "cnt": 10
-    },
-    "2C": {
-     "amt": 16088,
-     "cnt": 3
-    },
-    "3A": {
-     "amt": 14240,
-     "cnt": 3
-    },
-    "3B": {
-     "amt": 12551,
-     "cnt": 8
-    },
-    "3C": {
-     "amt": 11385,
-     "cnt": 3
-    }
-   }
-  },
-  {
-   "date": "20260921",
-   "market": "0905",
-   "sex": "025003",
-   "status": "ok",
-   "grades": {
-    "1++A": null,
-    "1++B": null,
-    "1++C": null,
-    "1+A": null,
-    "1+B": {
-     "amt": 21699,
-     "cnt": 1
-    },
-    "1+C": null,
-    "1A": null,
-    "1B": null,
-    "1C": null,
-    "2A": null,
-    "2B": null,
-    "2C": null,
-    "3A": null,
-    "3B": {
-     "amt": 11053,
-     "cnt": 3
-    },
-    "3C": null
-   }
-  },
-  {
-   "date": "20260921",
-   "market": "0905",
-   "sex": "025001",
-   "status": "closed",
-   "grades": {
-    "1++A": null,
-    "1++B": null,
-    "1++C": null,
-    "1+A": null,
-    "1+B": null,
-    "1+C": null,
-    "1A": null,
-    "1B": null,
-    "1C": null,
-    "2A": null,
-    "2B": null,
-    "2C": null,
-    "3A": null,
-    "3B": null,
-    "3C": null
-   }
-  },
-  {
-   "date": "20260921",
-   "market": "0202",
-   "sex": "025003",
-   "status": "ok",
-   "grades": {
-    "1++A": {
-     "amt": 24490,
-     "cnt": 1
-    },
-    "1++B": null,
-    "1++C": null,
-    "1+A": {
-     "amt": 22861,
-     "cnt": 2
-    },
-    "1+B": {
-     "amt": 11500,
-     "cnt": 1
-    },
-    "1+C": null,
-    "1A": {
-     "amt": 21690,
-     "cnt": 1
-    },
-    "1B": null,
-    "1C": null,
-    "2A": null,
-    "2B": null,
-    "2C": null,
-    "3A": null,
-    "3B": null,
-    "3C": null
-   }
-  },
-  {
-   "date": "20260921",
-   "market": "0202",
-   "sex": "025001",
-   "status": "ok",
-   "grades": {
-    "1++A": null,
-    "1++B": {
-     "amt": 24438,
-     "cnt": 2
-    },
-    "1++C": {
-     "amt": 21110,
-     "cnt": 1
-    },
-    "1+A": {
-     "amt": 21090,
-     "cnt": 1
-    },
-    "1+B": {
-     "amt": 21906,
-     "cnt": 2
-    },
-    "1+C": {
-     "amt": 20522,
-     "cnt": 3
-    },
-    "1A": {
-     "amt": 21990,
-     "cnt": 1
-    },
-    "1B": {
-     "amt": 19920,
-     "cnt": 1
-    },
-    "1C": {
-     "amt": 19455,
-     "cnt": 3
-    },
-    "2A": null,
-    "2B": {
-     "amt": 14390,
-     "cnt": 1
-    },
-    "2C": null,
-    "3A": null,
-    "3B": {
-     "amt": 11490,
-     "cnt": 1
-    },
-    "3C": null
-   }
-  },
   {
    "date": "20260922",
    "market": "0513",
@@ -4495,6 +4231,192 @@
   },
   {
    "date": "20261011",
+   "market": "0202",
+   "sex": "025001",
+   "status": "closed",
+   "grades": {
+    "1++A": null,
+    "1++B": null,
+    "1++C": null,
+    "1+A": null,
+    "1+B": null,
+    "1+C": null,
+    "1A": null,
+    "1B": null,
+    "1C": null,
+    "2A": null,
+    "2B": null,
+    "2C": null,
+    "3A": null,
+    "3B": null,
+    "3C": null
+   }
+  },
+  {
+   "date": "20261012",
+   "market": "0513",
+   "sex": "025003",
+   "status": "ok",
+   "grades": {
+    "1++A": {
+     "amt": 24929,
+     "cnt": 1
+    },
+    "1++B": {
+     "amt": 24299,
+     "cnt": 1
+    },
+    "1++C": {
+     "amt": 21699,
+     "cnt": 1
+    },
+    "1+A": null,
+    "1+B": {
+     "amt": 22207,
+     "cnt": 3
+    },
+    "1+C": {
+     "amt": 21849,
+     "cnt": 1
+    },
+    "1A": {
+     "amt": 20727,
+     "cnt": 2
+    },
+    "1B": null,
+    "1C": null,
+    "2A": null,
+    "2B": null,
+    "2C": null,
+    "3A": null,
+    "3B": null,
+    "3C": null
+   }
+  },
+  {
+   "date": "20261012",
+   "market": "0513",
+   "sex": "025001",
+   "status": "ok",
+   "grades": {
+    "1++A": null,
+    "1++B": null,
+    "1++C": null,
+    "1+A": null,
+    "1+B": null,
+    "1+C": null,
+    "1A": {
+     "amt": 20499,
+     "cnt": 1
+    },
+    "1B": null,
+    "1C": null,
+    "2A": null,
+    "2B": null,
+    "2C": null,
+    "3A": null,
+    "3B": {
+     "amt": 12768,
+     "cnt": 2
+    },
+    "3C": {
+     "amt": 11155,
+     "cnt": 1
+    }
+   }
+  },
+  {
+   "date": "20261012",
+   "market": "0905",
+   "sex": "025003",
+   "status": "ok",
+   "grades": {
+    "1++A": {
+     "amt": 20000,
+     "cnt": 1
+    },
+    "1++B": {
+     "amt": 25909,
+     "cnt": 1
+    },
+    "1++C": null,
+    "1+A": null,
+    "1+B": null,
+    "1+C": null,
+    "1A": null,
+    "1B": {
+     "amt": 15350,
+     "cnt": 1
+    },
+    "1C": null,
+    "2A": null,
+    "2B": null,
+    "2C": null,
+    "3A": null,
+    "3B": null,
+    "3C": null
+   }
+  },
+  {
+   "date": "20261012",
+   "market": "0905",
+   "sex": "025001",
+   "status": "ok",
+   "grades": {
+    "1++A": null,
+    "1++B": {
+     "amt": 21200,
+     "cnt": 1
+    },
+    "1++C": null,
+    "1+A": null,
+    "1+B": null,
+    "1+C": null,
+    "1A": null,
+    "1B": null,
+    "1C": {
+     "amt": 13530,
+     "cnt": 1
+    },
+    "2A": null,
+    "2B": {
+     "amt": 10719,
+     "cnt": 1
+    },
+    "2C": null,
+    "3A": null,
+    "3B": {
+     "amt": 9255,
+     "cnt": 1
+    },
+    "3C": null
+   }
+  },
+  {
+   "date": "20261012",
+   "market": "0202",
+   "sex": "025003",
+   "status": "closed",
+   "grades": {
+    "1++A": null,
+    "1++B": null,
+    "1++C": null,
+    "1+A": null,
+    "1+B": null,
+    "1+C": null,
+    "1A": null,
+    "1B": null,
+    "1C": null,
+    "2A": null,
+    "2B": null,
+    "2C": null,
+    "3A": null,
+    "3B": null,
+    "3C": null
+   }
+  },
+  {
+   "date": "20261012",
    "market": "0202",
    "sex": "025001",
    "status": "closed",
