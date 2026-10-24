@@ -30,6 +30,7 @@
   --farm: #8A5A2B;    --farm-soft: #F3EBE2;
   --consult: #2E6B57; --consult-soft: #E6F0EC;
   --market: #8A2F2A;  --market-soft: #F5E6E4;
+  --analysis: #3B5B8C; --analysis-soft: #E6ECF4; /* 출하성적 이상 농가 분석(포털 카드에만 씀) */
 
   --accent: var(--portal);
   --accent-soft: var(--portal-soft);
@@ -46,7 +47,7 @@
 .hw-portal:hover { color: var(--ink); }
 .hw-sep { color: var(--series-ref); }
 .hw-app { font-size: 17px; font-weight: 700; color: var(--ink); }
-.hw-nav { display: flex; gap: 20px; font-size: 14px; font-weight: 500; }
+.hw-nav { display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 14px; font-weight: 500; }
 .hw-nav a { color: var(--ink-2); text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
 .hw-nav a:hover { color: var(--ink); }
 .hw-nav a[aria-current="page"] { color: var(--accent); font-weight: 700; border-bottom-color: var(--accent); }
