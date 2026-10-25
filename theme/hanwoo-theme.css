@@ -30,7 +30,7 @@
   --farm: #8A5A2B;    --farm-soft: #F3EBE2;
   --consult: #2E6B57; --consult-soft: #E6F0EC;
   --market: #8A2F2A;  --market-soft: #F5E6E4;
-  --analysis: #3B5B8C; --analysis-soft: #E6ECF4; /* 출하성적 이상 농가 분석(포털 카드에만 씀) */
+  --analysis: #3B5B8C; --analysis-soft: #E6ECF4; /* 이용도축 출하성적 이상 농가 분석(포털 카드에만 씀) */
 
   --accent: var(--portal);
   --accent-soft: var(--portal-soft);
