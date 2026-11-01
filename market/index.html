@@ -44,11 +44,11 @@
 }
 * { box-sizing: border-box; }
 
-/* 공통 머리글 (hanwoo-theme.css 의 .hw-bar 와 같은 모양) */
+/* 공통 머리글 (hanwoo-theme.css 의 .hw-bar 와 같은 모양) + 앱 색 초록 — 윗줄·글자 표시·'지금 여기' 밑줄 (11-01, 포털 상자 색과 같게) */
 .hw-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px;
-  min-height: 60px; padding: 12px 24px; background: var(--surface); border-bottom: 1px solid var(--border); font-family: var(--font); }
+  min-height: 60px; padding: 12px 24px; background: var(--surface); border-top: 3px solid #1E8449; border-bottom: 1px solid var(--border); font-family: var(--font); }
 .hw-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.hw-mark { width: 28px; height: 28px; flex-shrink: 0; border-radius: var(--radius-sm); background: var(--brand); color: #FFFFFF;
+.hw-mark { width: 28px; height: 28px; flex-shrink: 0; border-radius: var(--radius-sm); background: #1E8449; color: #FFFFFF;
   display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
 .hw-portal { font-size: 14px; color: var(--muted); text-decoration: none; }
 .hw-portal:hover { color: var(--ink); }
@@ -57,7 +57,7 @@
 .hw-nav { display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 14px; font-weight: 500; }
 .hw-nav a { color: var(--muted); text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
 .hw-nav a:hover { color: var(--ink); }
-.hw-nav a[aria-current="page"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--accent); }
+.hw-nav a[aria-current="page"] { color: #1A7340; font-weight: 600; border-bottom-color: #1E8449; }
 body { background: var(--page); color: var(--ink); font-family: var(--font); font-size: var(--fs-base); line-height: 1.6; margin: 0; }
 .wrap { max-width: 1200px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 32px; }
 h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.3; }
