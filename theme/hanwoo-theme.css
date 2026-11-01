@@ -5,7 +5,8 @@
    - 모서리 두 가지: 상자 6px · 입력·버튼 4px. 표 머리글은 회색 띠 없이 작은 회색 글자 + 아래 선.
    - 이 파일을 불러오지 못하는 곳은 같은 값을 직접 넣어 쓴다 — 값을 바꾸면 함께 바꿀 것:
        시험농장/tools/tailwind.input.css (원본 토큰)
-       한우_스마트컨설팅_웹시스템/web/app.css · 한우데이터분석 웹시스템/dashboard/template.html (아직 옛 값, 차례로 옮김) */
+       한우데이터분석 웹시스템/dashboard/template.html (→ market/index.html, 11-01 옮김)
+       한우_스마트컨설팅_웹시스템/web/app.css (아직 옛 값, 차례로 옮김) */
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@600&display=swap");
 
 :root {
