@@ -111,6 +111,7 @@
     var table = el.querySelector('[data-h7d-table]');
     var controls = el.querySelector('[data-h7d-controls]');
     var meta = el.querySelector('[data-h7d-meta]');
+    var warn = el.querySelector('[data-h7d-warn]'); // 없으면 경고를 meta 앞에 붙인다(예전 배치)
     return fetch(url || 'data/hanwoo_7d.json', { cache: 'no-cache' })
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -131,14 +132,17 @@
         });
         draw();
         var gen = String(data.generatedAt || '').replace('T', ' ').slice(0, 16);
+        var staleMsg = pick.stale ? dateLabel(pick.end) + ' 시세가 아직 없습니다(갱신 대기 또는 공휴일). 표는 그 전 경매일까지입니다.' : '';
+        if (warn) warn.textContent = staleMsg;
         meta.textContent = (data.dummy ? '[개발용 가짜 데이터] ' : '') +
-          (pick.stale ? '⚠ ' + dateLabel(pick.end) + ' 시세가 아직 없습니다(갱신 대기 또는 공휴일). ' : '') +
+          (!warn && staleMsg ? '⚠ ' + staleMsg + ' ' : '') +
           '단위 원/kg(결함포함 평균 경락가) · 괄호는 두수 · 흐린 숫자는 ' + FEW_HEAD + '두 이하 거래 · – 거래 없음 · 수집 ' + gen;
       })
       .catch(function (e) {
         // 실패하면 가짜 숫자 대신 실패했다는 사실만 보여준다
         table.innerHTML = '<p class="h7d-msg">시세를 불러오지 못했습니다. (' + e.message + ')</p>';
         meta.textContent = '';
+        if (warn) warn.textContent = '';
       });
   }
 

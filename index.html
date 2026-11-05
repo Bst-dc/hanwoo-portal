@@ -17,29 +17,38 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body { background: var(--page); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.6; min-height: 100vh; }
-.wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding: 40px 16px 56px; display: grid; gap: 24px; }
-@media (min-width: 640px) { .wrap { padding-inline: 24px; } }
+.wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding: 28px 16px 48px; display: grid; gap: 20px; }
+@media (min-width: 640px) { .wrap { padding: 36px 24px 56px; gap: 24px; } }
 
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
 
-.intro { display: grid; gap: 4px; }
+/* 제목 줄: 왼쪽 큰 제목(명조), 오른쪽 오늘 날짜 */
+.intro { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 16px; }
 .eyebrow { font-size: 12px; color: var(--muted); font-weight: 500; }
+.today { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .title { margin: 0; font-family: var(--font-serif); font-size: clamp(24px, 4vw, 30px); font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; text-wrap: balance; }
 
-.cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+/* 시스템 상자: 폰 1열 · 패드 2열 · PC(1100px 이상) 4열 한 줄 — 시세표가 첫 화면에 들어오게 */
+.cards { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .cards { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+@media (min-width: 1100px) { .cards { grid-template-columns: repeat(4, 1fr); } }
 /* 앱별 색 */
 .app-farm    { --app: #2A78D6; --app-on: #FFFFFF; --app-text: #1F5FAE; }
 .app-consult { --app: #F2B705; --app-on: #161A19; --app-text: #8A6300; }
 .app-analysis{ --app: #C8372D; --app-on: #FFFFFF; --app-text: #B4321F; }
 .app-market  { --app: #1E8449; --app-on: #FFFFFF; --app-text: #1A7340; }
-a.card { border-top: 4px solid var(--app, var(--line)); display: grid; grid-template-rows: auto auto 1fr auto; gap: 12px; text-decoration: none; color: inherit; padding: 24px; transition: border-color 0.15s, background-color 0.15s; }
+a.card { border-top: 4px solid var(--app, var(--line)); display: grid; grid-template-rows: auto 1fr auto; gap: 10px; text-decoration: none; color: inherit; padding: 16px; transition: border-color 0.15s, background-color 0.15s; }
+@media (min-width: 640px) { a.card { padding: 20px; gap: 12px; } }
 a.card:hover { border-color: var(--app, var(--line-2)); background: #FBFBFB; }
 a.card:hover .go { text-decoration: underline; text-underline-offset: 3px; }
 a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offset: 3px; }
-.card-mark { width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--app, var(--surface-2)); color: var(--app-on, var(--ink)); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; }
-.card h2 { margin: 0; font-size: 18px; font-weight: 600; }
-.card ul { margin: 0; padding-left: 18px; color: var(--ink-2); font-size: 14px; display: grid; gap: 4px; }
-.foot { display: flex; justify-content: flex-end; align-items: center; gap: 8px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 12px; font-size: 13px; }
+/* 표시 + 제목 한 줄 (제목이 두 줄이 되어도 표시는 첫 줄에) */
+.card-head { display: flex; align-items: flex-start; gap: 10px; }
+.card-mark { width: 28px; height: 28px; flex-shrink: 0; border-radius: var(--radius-sm); background: var(--app, var(--surface-2)); color: var(--app-on, var(--ink)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+.card h2 { margin: 0; font-size: 17px; font-weight: 600; line-height: 28px; word-break: keep-all; text-wrap: balance; }
+@media (min-width: 1100px) { .card h2 { line-height: 1.4; padding-top: 2px; } }
+.card ul { margin: 0; padding-left: 18px; word-break: keep-all; color: var(--ink-2); font-size: 13.5px; line-height: 1.55; display: grid; gap: 3px; align-content: start; }
+.foot { display: flex; justify-content: flex-end; font-size: 13px; }
 .foot .go { color: var(--app-text, var(--ink)); font-weight: 600; white-space: nowrap; }
 
 .market-section { padding: 24px; display: grid; gap: 16px; }
@@ -61,6 +70,17 @@ a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offs
 .h7d .c-error { color: var(--danger); font-weight: 600; }
 .h7d .few { color: var(--muted); }
 .h7d .cnt { font-size: 12px; color: var(--muted); margin-left: 4px; }
+/* 줄을 따라 읽기 쉽게: 마우스 올린 줄만 옅은 회색 */
+.h7d tbody tr:hover > * { background: var(--surface-2); }
+/* 폰에서 옆으로 밀어도 등급 열은 왼쪽에 남는다 */
+.h7d th:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface); }
+.h7d thead th:first-child { min-width: 56px; }
+@media (max-width: 899px) { .h7d th:first-child { box-shadow: inset -1px 0 0 var(--line); } }
+.h7d tbody tr:hover > th:first-child { background: var(--surface-2); }
+
+/* 최신 시세가 아직 없을 때: 작은 회색 설명에 묻히지 않게 표 위에 한 줄로 */
+.h7d-warn { margin: 0; padding: 8px 12px; border-radius: var(--radius-sm); background: #FFF6E5; color: #6B4A00; font-size: 13px; }
+.h7d-warn:empty { display: none; }
 
 .h7d-controls { display: flex; flex-wrap: wrap; gap: 12px 16px; }
 .h7d-seg { display: inline-flex; background: var(--surface-2); border-radius: var(--radius-sm); padding: 3px; gap: 2px; }
@@ -70,9 +90,9 @@ a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offs
 .h7d-seg button:focus-visible { outline: 2px solid var(--brand); }
 
 .h7d-msg { margin: 0; padding: 32px 0; color: var(--muted); text-align: center; }
-.h7d-meta { margin: 0; color: var(--muted); font-size: 12px; text-align: right; }
+.h7d-meta { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
 
-.help { color: var(--muted); font-size: 13px; display: grid; gap: 4px; text-align: center; }
+.help { color: var(--muted); font-size: 13px; word-break: keep-all; display: grid; gap: 4px; padding-top: 4px; }
 .help p { margin: 0; }
 @media (prefers-reduced-motion: reduce) { a.card { transition: none; } }
 </style>
@@ -94,12 +114,12 @@ a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offs
 <div class="wrap">
   <div class="intro">
     <h1 class="title">성태 업무 자동화 시스템</h1>
+    <span class="today" data-today></span>
   </div>
 
   <nav class="cards" aria-label="시스템 선택">
     <a class="card panel app-farm" href="https://testfarm.3-38-225-111.sslip.io/" target="_blank" rel="noopener noreferrer">
-      <span class="card-mark" aria-hidden="true">농</span>
-      <h2>시험농장 관리</h2>
+      <div class="card-head"><span class="card-mark" aria-hidden="true">농</span><h2>시험농장 관리</h2></div>
       <ul>
         <li>구미선산·구미고아 개체 입식·사육 관리</li>
         <li>사료·품목 매입과 재고, 재고조사표</li>
@@ -109,8 +129,7 @@ a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offs
     </a>
 
     <a class="card panel app-consult" href="https://consulting.3-38-225-111.sslip.io/" target="_blank" rel="noopener noreferrer">
-      <span class="card-mark" aria-hidden="true">컨</span>
-      <h2>한우 스마트컨설팅</h2>
+      <div class="card-head"><span class="card-mark" aria-hidden="true">컨</span><h2>한우 스마트컨설팅</h2></div>
       <ul>
         <li>이력제 출하성적 자동 추출</li>
         <li>전국 평균과 1:1 비교, 현장조사 입력</li>
@@ -120,8 +139,7 @@ a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offs
     </a>
 
     <a class="card panel app-analysis" href="https://analysis.3-38-225-111.sslip.io/" target="_blank" rel="noopener noreferrer">
-      <span class="card-mark" aria-hidden="true">분</span>
-      <h2>이용도축 출하성적 이상 농가 분석</h2>
+      <div class="card-head"><span class="card-mark" aria-hidden="true">분</span><h2>이용도축 출하성적 이상 농가 분석</h2></div>
       <ul>
         <li>조합원 농가별 출하성적, 조합 트렌드</li>
         <li>근내지방도·전국 평균 미달 이상 농가 탐지</li>
@@ -131,8 +149,7 @@ a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offs
     </a>
 
     <a class="card panel app-market" href="market/" target="_blank" rel="noopener noreferrer">
-      <span class="card-mark" aria-hidden="true">시</span>
-      <h2>한우 시세전망</h2>
+      <div class="card-head"><span class="card-mark" aria-hidden="true">시</span><h2>한우 시세전망</h2></div>
       <ul>
         <li>거세우·암소 평균 경락가 추이</li>
         <li>1~24개월 가격 예측과 신뢰도</li>
@@ -148,6 +165,7 @@ a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offs
       <span class="eyebrow">축산물품질평가원 제공</span>
     </div>
     <div class="h7d-controls" data-h7d-controls></div>
+    <p class="h7d-warn" data-h7d-warn role="status"></p>
     <div class="table-wrap" data-h7d-table><p class="h7d-msg">시세를 불러오는 중입니다…</p></div>
     <p class="h7d-meta" data-h7d-meta></p>
   </section>
@@ -157,7 +175,16 @@ a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offs
     <p>휴대폰 홈 화면에 이 페이지를 추가해 두면 앱처럼 바로 열 수 있습니다.</p>
   </div>
 </div>
-<script src="js/hanwoo-7d.js"></script>
-<script>Hanwoo7d.load(document.getElementById('hanwoo7d'));</script>
+<script src="js/hanwoo-7d.js?v=20261105"></script>
+<script>
+Hanwoo7d.load(document.getElementById('hanwoo7d'));
+// 제목 옆 오늘 날짜(한국시간)
+(function () {
+  var el = document.querySelector('[data-today]');
+  try {
+    el.textContent = new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' }).format(new Date());
+  } catch (e) { el.textContent = ''; }
+})();
+</script>
 </body>
 </html>
