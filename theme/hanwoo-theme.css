@@ -1,13 +1,14 @@
 /* 한우 업무 시스템 공통 디자인 기준 — 2026-11-01 새 기준으로 바꿈
    - 기준 문서: 시험농장/DESIGN.md (10-31 확정). 예전 크림(#F6F5F1)+갈색(#8A5A2B)·Pretendard·12px 카드는 'AI 기본 배색'이라 바꿈.
    - 밝은 화면 고정. 중립 회색 바탕 · 잉크색(거의 검정) 버튼·표시 · 장부 녹색(--accent)은 데이터와 많아야 한 곳에만.
-   - 글꼴: 본문 IBM Plex Sans KR, 큰 제목만 Noto Serif KR(명조). 없으면 맑은 고딕·바탕체.
+   - 글꼴: 본문 IBM Plex Sans KR(400·500·600), 큰 제목만 Noto Serif KR(명조 600). 없으면 맑은 고딕·바탕체.
+     굵기 700은 쓰지 않아 불러오지 않는다(11-06) — <b>·<strong>도 600으로 맞춘다.
    - 모서리 두 가지: 상자 6px · 입력·버튼 4px. 표 머리글은 회색 띠 없이 작은 회색 글자 + 아래 선.
    - 이 파일을 불러오지 못하는 곳은 같은 값을 직접 넣어 쓴다 — 값을 바꾸면 함께 바꿀 것:
        시험농장/tools/tailwind.input.css (원본 토큰)
        한우데이터분석 웹시스템/dashboard/template.html (→ market/index.html, 11-01 옮김)
        한우_스마트컨설팅_웹시스템/web/app.css (아직 옛 값, 차례로 옮김) */
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@600&display=swap");
 
 :root {
   color-scheme: light;
@@ -30,6 +31,8 @@
   --font: "IBM Plex Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   --font-serif: "Noto Serif KR", "Batang", "AppleMyungjo", serif;
 }
+
+b, strong { font-weight: 600; }
 
 /* 공통 머리글: [한] 한우 업무 포털 / 앱 이름 ······ 시험농장 · 스마트컨설팅 · 출하분석 · 시세전망 */
 .hw-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px;
