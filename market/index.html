@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbit&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 /* Layout: 공통 머리글 → 상단 고정 조작줄(예측기간·표시기간) → 요약 카드 → 가격 추이·예측 2열 → 신뢰도 표 → 공급 → 참고지표 → 데이터 기준월
    색·글꼴은 한우 업무 시스템 공통 기준(hanwoo-portal/theme/hanwoo-theme.css = 시험농장/DESIGN.md, 2026-11-01 새 기준)과 같은 값.
@@ -36,8 +37,8 @@
   --good-text: #1E7A4F;
   --warning: #E0A21A;
   --warning-text: #8A5A00;
-  --font: "Orbit", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;     /* 오빗: 기계 느낌 고딕, 굵기 400 하나뿐(굵은 글씨는 브라우저가 합성) — 2026-11-06 */
-  --font-serif: var(--font);     /* 제목도 같은 오빗 (원래 Noto Serif KR 명조) */
+  --font: "Pretendard Variable", Pretendard, "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;     /* 본문·표·숫자·차트 — 2026-11-12 Pretendard (출하분석 앱 '안 2'와 같게) */
+  --font-serif: "Orbit", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;     /* 제목·앱 이름 = 오빗 400 (굵기 하나뿐이라 굵게 쓰지 않음) */
   --fs-xs: 0.75rem; --fs-sm: 0.8125rem; --fs-base: 0.9375rem; --fs-md: 1rem; --fs-lg: 1.25rem; --fs-xl: 1.875rem;
   --radius: 6px;
   --radius-sm: 4px;
@@ -53,7 +54,7 @@
 .hw-portal { font-size: 14px; color: var(--muted); text-decoration: none; }
 .hw-portal:hover { color: var(--ink); }
 .hw-sep { color: var(--series-ref); }
-.hw-app { font-size: 16px; font-weight: 600; color: var(--ink); }
+.hw-app { font-family: var(--font-serif); font-size: 16px; font-weight: 400; color: var(--ink); }
 .hw-nav { display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 14px; font-weight: 500; }
 .hw-nav a { color: var(--muted); text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
 .hw-nav a:hover { color: var(--ink); }
@@ -61,9 +62,9 @@
 body { background: var(--page); color: var(--ink); font-family: var(--font); font-size: var(--fs-base); line-height: 1.6; margin: 0; }
 .wrap { max-width: 1200px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 32px; }
 h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.3; }
-h1 { font-family: var(--font-serif); font-size: var(--fs-xl); font-weight: 600; letter-spacing: -0.01em; }
-h2 { font-size: var(--fs-lg); font-weight: 600; }
-h3 { font-size: var(--fs-md); font-weight: 600; }
+h1 { font-family: var(--font-serif); font-size: var(--fs-xl); font-weight: 400; letter-spacing: 0; }
+h2 { font-family: var(--font-serif); font-size: var(--fs-lg); font-weight: 400; }
+h3 { font-family: var(--font-serif); font-size: var(--fs-md); font-weight: 400; }
 p { margin: 0; }
 .lede { color: var(--ink-2); max-width: 68ch; }
 .meta { color: var(--muted); font-size: var(--fs-sm); }
