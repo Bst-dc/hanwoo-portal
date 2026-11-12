@@ -13,7 +13,7 @@
 /* Layout: 공통 머리글 → 제목 → 시스템 상자 4개(넓으면 2열, 좁으면 1열) → 7일 시세 → 이용 안내
    글자 크기는 네 단계만: 큰 제목 24~30px · 상자 제목 16px · 본문·표 14px · 보조 12px (11-06 정리).
    색·글꼴은 theme/hanwoo-theme.css (한우 업무 시스템 공통 기준 = 시험농장/DESIGN.md). 밝은 화면 고정.
-   시스템 상자 4개만 앱마다 색을 둔다(11-01 성태 요청): 시험농장 파랑 · 스마트컨설팅 노랑 · 출하분석 빨강 · 시세전망 초록.
+   시스템 상자만 앱마다 색을 둔다(11-01 성태 요청): 시험농장 파랑 · 스마트컨설팅 노랑 · 출하분석 빨강 · 시세전망 초록 · 사육지도 보라(11-12 추가).
    --app = 윗줄·표시 바탕, --app-text = 흰 바탕 위 글자(노랑은 글자로 읽기 어려워 진한 황토색). 그 밖은 잉크색. */
 * { box-sizing: border-box; }
 html, body { margin: 0; }
@@ -29,15 +29,16 @@ body { background: var(--page); color: var(--ink); font-family: var(--font); fon
 .today { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .title { margin: 0; font-family: var(--font); font-size: clamp(24px, 4vw, 30px); font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; text-wrap: balance; }
 
-/* 시스템 상자: 폰 1열 · 패드 2열 · PC(1100px 이상) 4열 한 줄 — 시세표가 첫 화면에 들어오게 */
+/* 시스템 상자: 폰 1열 · 패드 2열 · PC(1100px 이상) 5열 한 줄 — 시세표가 첫 화면에 들어오게 */
 .cards { display: grid; gap: 12px; grid-template-columns: 1fr; }
 @media (min-width: 640px) { .cards { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
-@media (min-width: 1100px) { .cards { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1100px) { .cards { grid-template-columns: repeat(5, 1fr); } }
 /* 앱별 색 */
 .app-farm    { --app: #2A78D6; --app-on: #FFFFFF; --app-text: #1F5FAE; }
 .app-consult { --app: #F2B705; --app-on: #161A19; --app-text: #8A6300; }
 .app-analysis{ --app: #C8372D; --app-on: #FFFFFF; --app-text: #B4321F; }
 .app-market  { --app: #1E8449; --app-on: #FFFFFF; --app-text: #1A7340; }
+.app-map     { --app: #6B46C1; --app-on: #FFFFFF; --app-text: #5B3AA8; }
 a.card { border-top: 4px solid var(--app, var(--line)); display: grid; grid-template-rows: auto 1fr auto; gap: 10px; text-decoration: none; color: inherit; padding: 16px; transition: border-color 0.15s, background-color 0.15s; }
 @media (min-width: 640px) { a.card { padding: 20px; gap: 12px; } }
 a.card:hover { border-color: var(--app, var(--line-2)); background: #FBFBFB; }
@@ -109,6 +110,7 @@ a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offs
     <a href="https://consulting.3-38-225-111.sslip.io/" target="_blank" rel="noopener noreferrer">스마트컨설팅</a>
     <a href="https://analysis.3-38-225-111.sslip.io/" target="_blank" rel="noopener noreferrer">출하분석</a>
     <a href="market/" target="_blank" rel="noopener noreferrer">시세전망</a>
+    <a href="https://bst-dc.github.io/hanwoo-map/" target="_blank" rel="noopener noreferrer">사육지도</a>
   </nav>
 </header>
 
@@ -140,6 +142,12 @@ a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offs
     <a class="card panel app-market" href="market/" target="_blank" rel="noopener noreferrer">
       <div class="card-head"><span class="card-mark" aria-hidden="true">시</span><h2>한우 시세전망</h2></div>
       <p class="desc">경락가 추이와 1~24개월 예측</p>
+      <div class="foot"><span class="go">보기 →</span></div>
+    </a>
+
+    <a class="card panel app-map" href="https://bst-dc.github.io/hanwoo-map/" target="_blank" rel="noopener noreferrer">
+      <div class="card-head"><span class="card-mark" aria-hidden="true">지</span><h2>한우 사육지도</h2></div>
+      <p class="desc">지역별 농장 수와 사육 두수</p>
       <div class="foot"><span class="go">보기 →</span></div>
     </a>
   </nav>
