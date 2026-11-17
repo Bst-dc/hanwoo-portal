@@ -85,7 +85,7 @@ input[type="range"] { accent-color: var(--brand); width: min(240px, 52vw); }
 .seg { display: inline-flex; background: var(--surface-2); border-radius: var(--radius-sm); padding: 3px; gap: 2px; }
 .seg button { font: inherit; font-size: var(--fs-sm); border: 0; border-radius: 3px; background: transparent; color: var(--muted); padding: 4px 12px; cursor: pointer; }
 .seg button:hover { color: var(--ink); }
-.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 0 0 1px var(--border); }
+.seg button[aria-pressed="true"], .seg button[aria-pressed="true"]:hover { background: #256FCC; color: #FFFFFF; font-weight: 600; }   /* 11-17 '모두 파랑': 다른 한우 앱의 주 단추·고른 단추와 같은 파랑(흰 글자 5.0:1) */
 button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
 section { display: grid; gap: 12px; }
