@@ -56,7 +56,7 @@ def test_cow_real_with_no_trade_grade():
 
 def test_closed_day():
     r = parse_response((FX / "closed_20261003_025003.xml").read_bytes(), "20261003", "025003")
-    assert r == {"status": "closed", "grades": {g: None for g in fp.GRADES}}, r
+    assert r == {"status": "closed", "grades": {g: None for g in fp.GRADES}, "total": None}, r
 
 
 def test_rejects_bad_responses():
@@ -113,6 +113,72 @@ def test_collect_keeps_going_and_reuses_prev():
     assert by[("0513", "025003")]["status"] == "ok", "다른 시장은 정상 수집"
     assert by[("0905", "025003")]["reused"] is True and by[("0905", "025003")]["grades"]["1++A"]["amt"] == 1
     assert by[("0905", "025001")]["status"] == "error", "이전 값이 없으면 error로 남김"
+
+
+def test_collect_refetches_only_recent_days():
+    calls = []
+    def fetcher(ymd, m, s):
+        calls.append(ymd)
+        return OK
+    old_ok = {"status": "ok", "grades": {"1++A": {"amt": 7, "cnt": 7}}, "total": {"amt": 7, "cnt": 7}}
+    prev = {("20261001", m, s): old_ok for m in ("0513", "0905", "0202") for s in ("025003", "025001")}
+    prev[("20261001", "0513", "025003")] = {"status": "error", "grades": None}  # 오류였던 칸은 다시 받는다
+    fetches, errors = fp.collect(["20261001", "20261002"], fetcher, prev, refetch={"20261002"})
+    assert len(fetches) == 12 and errors == 0
+    assert calls.count("20261001") == 1, "과거 날짜는 이전 값이 없는 오류 칸 1건만 호출"
+    assert calls.count("20261002") == 6, "최근 날짜는 전부 다시 호출"
+    kept = [f for f in fetches if f["date"] == "20261001" and f["grades"]["1++A"]["amt"] == 7]
+    assert len(kept) == 5, "재사용한 값은 그대로 유지"
+
+
+def test_total_row_real():
+    """실제 응답(음성 10/2)의 등외제외(E) 행이 전체 평균으로 저장되고, 휴장일은 None."""
+    steer = parse_response((FX / "0513_20261002_025003.xml").read_bytes(), "20261002", "025003")
+    assert steer["total"] == {"amt": 25501, "cnt": 270}, steer["total"]
+    cow = parse_response((FX / "0513_20261002_025001.xml").read_bytes(), "20261002", "025001")
+    assert cow["total"] and cow["total"]["cnt"] > 0 and cow["total"]["amt"] > 0, cow["total"]
+    closed = parse_response((FX / "closed_20261003_025003.xml").read_bytes(), "20261003", "025003")
+    assert closed["status"] == "closed" and closed["total"] is None
+
+
+def test_total_row_missing_is_error():
+    raw = (FX / "0513_20261002_025003.xml").read_text(encoding="utf-8").replace("<gradeType>E</gradeType>", "<gradeType>Z</gradeType>")
+    raises(lambda: parse_response(raw.encode("utf-8"), "20261002", "025003"), "등외제외")
+
+
+def _synthetic(e_amt, g_amt):
+    """등외 1두만 거래된 날(세부등급 비어 있음)을 흉내 낸 최소 응답. e_amt/g_amt로 불일치 상황도 만든다."""
+    def item(gtype, nm, amt=None, cnt=None):
+        body = f"<auctAmt>{amt}</auctAmt><auctCnt>{cnt}</auctCnt><maxAuctAmt>{amt}</maxAuctAmt><minAuctAmt>{amt}</minAuctAmt>" if amt else ""
+        return (f"<item>{body}<gradeNm>{nm}</gradeNm><gradeType>{gtype}</gradeType><judgeBreedNm>한우</judgeBreedNm>"
+                f"<judgeSexNm>암</judgeSexNm><startYmd>20261023</startYmd></item>")
+    items = "".join(item("A", g, g_amt if g == "1++A" else None, 1) for g in fp.GRADES)
+    items += item("A", "등외", 3233, 1) + item("E", "등외제외", e_amt, 1 if e_amt else None)
+    return f"<response><header><resultCode>00</resultCode></header><body><items>{items}</items></body></response>".encode("utf-8")
+
+
+def test_total_none_when_only_outgrade_traded():
+    r = parse_response(_synthetic(None, None), "20261023", "025001")
+    assert r["status"] == "ok" and r["total"] is None and all(v is None for v in r["grades"].values())
+
+
+def test_total_empty_but_grades_present_is_error():
+    raises(lambda: parse_response(_synthetic(None, 20000), "20261023", "025001"), "비어 있음")
+
+
+def test_collect_refetches_days_saved_without_total():
+    calls = []
+    def fetcher(ymd, m, s):
+        calls.append((ymd, m, s))
+        return {**OK, "total": {"amt": 1, "cnt": 1}}
+    old = {"status": "ok", "grades": {"1++A": {"amt": 7, "cnt": 7}}}  # 옛 형식: total 키 없음
+    prev = {("20261001", "0513", "025003"): old,
+            ("20261001", "0513", "025001"): {**old, "total": {"amt": 9, "cnt": 9}}}
+    fetches, _ = fp.collect(["20261001"], fetcher, prev, refetch=set())
+    by = {(f["market"], f["sex"]): f for f in fetches}
+    assert ("20261001", "0513", "025003") in calls, "total이 없는 옛 저장분은 다시 받는다"
+    assert ("20261001", "0513", "025001") not in calls, "total이 있으면 재사용"
+    assert by[("0513", "025001")]["total"] == {"amt": 9, "cnt": 9}
 
 
 def test_key_error_not_retried_and_aborts_fast():

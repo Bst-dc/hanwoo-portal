@@ -91,6 +91,39 @@ a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offs
 .h7d-seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 0 0 1px var(--line); }
 .h7d-seg button:focus-visible { outline: 2px solid var(--brand); }
 
+/* 추이 차트: 버튼을 눌러야 펼쳐진다. 좁은 화면에서는 옆으로 밀어서 본다 */
+.h7d-toggle { font: inherit; font-size: 14px; min-height: 36px; padding: 4px 16px; border: 1px solid var(--line-2); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); cursor: pointer; }
+.h7d-toggle:hover { background: var(--surface-2); }
+.h7d-toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.h7d-chart-box { margin-top: 12px; overflow-x: auto; }
+.h7d-chart-box[hidden] { display: none; }
+.h7d-chart { display: block; width: 100%; min-width: 600px; height: auto; font-family: var(--font); }
+.h7d-chart .grid { stroke: var(--line); stroke-width: 1; }
+.h7d-chart .ax { fill: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+
+/* 한 달 추이 차트 */
+.h7d-trend-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 16px; margin-bottom: 8px; }
+.h7d-lgs { display: flex; flex-wrap: wrap; gap: 8px; }
+.h7d-lg { font: inherit; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 4px 10px; border: 1px solid var(--line-2); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); cursor: pointer; font-variant-numeric: tabular-nums; }
+.h7d-lg:hover { background: var(--surface-2); }
+.h7d-lg[aria-pressed="true"] { background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--ink); font-weight: 600; }
+.h7d-lg:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.h7d-lg-total { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 4px 10px; border-radius: var(--radius-sm); background: var(--ink); color: #fff; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.h7d-lg-total i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 2px solid #fff; background: #fff !important; flex-shrink: 0; }
+.h7d-lg-total .v, .h7d-lg-total .chg { color: #fff; }
+.h7d-lg i, .h7d-tip i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.h7d-lg .v { color: var(--muted); }
+.h7d-lg .chg.up { color: var(--danger); }   /* 오름=빨강 · 내림=파랑 (한국 시세 표기 관례) */
+.h7d-lg .chg.down { color: #1F5FAE; }
+.h7d-chart-box { position: relative; }
+.h7d-trend .zero { stroke: var(--line-2); }
+.h7d-trend .end { font-size: 12px; font-weight: 600; }
+.h7d-trend .cross { stroke: var(--series-ref); stroke-width: 1; pointer-events: none; }
+.h7d-tip { position: absolute; z-index: 2; pointer-events: none; background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--radius-sm); box-shadow: 0 2px 8px rgba(0,0,0,.12); padding: 8px 10px; font-size: 12px; line-height: 1.6; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.h7d-tip[hidden] { display: none; }
+.h7d-tip div { display: flex; align-items: center; gap: 6px; }
+.h7d-tip b { display: block; margin-bottom: 2px; }
+
 .h7d-msg { margin: 0; padding: 32px 0; color: var(--muted); text-align: center; }
 .h7d-meta { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
 
@@ -161,6 +194,21 @@ a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offs
     <p class="h7d-warn" data-h7d-warn role="status"></p>
     <div class="table-wrap" data-h7d-table><p class="h7d-msg">시세를 불러오는 중입니다…</p></div>
     <p class="h7d-meta" data-h7d-meta></p>
+    <div class="h7d-chart-area">
+      <button type="button" class="h7d-toggle" data-h7d-trend-toggle aria-expanded="false" aria-controls="h7d-trend">한 달 추이 차트 보기 ▾</button>
+      <div class="h7d-chart-box" id="h7d-trend" data-h7d-trend hidden>
+        <div class="h7d-trend-top">
+          <div class="h7d-lgs" data-h7d-trend-legend></div>
+          <div class="h7d-seg" role="group" aria-label="보기 방식">
+            <button type="button" data-mode="price" aria-pressed="true">가격</button>
+            <button type="button" data-mode="rate" aria-pressed="false">변동률</button>
+          </div>
+        </div>
+        <div class="h7d-trend-wrap" data-h7d-trend-chart></div>
+        <div class="h7d-tip" data-h7d-trend-tip hidden></div>
+        <p class="h7d-meta" data-h7d-trend-note></p>
+      </div>
+    </div>
   </section>
 
   <div class="help">
@@ -168,7 +216,7 @@ a.card:focus-visible { outline: 2px solid var(--app, var(--brand)); outline-offs
     <p>휴대폰 홈 화면에 이 페이지를 추가해 두면 앱처럼 바로 열 수 있습니다.</p>
   </div>
 </div>
-<script src="js/hanwoo-7d.js?v=20261105"></script>
+<script src="js/hanwoo-7d.js?v=20261121"></script>
 <script>
 Hanwoo7d.load(document.getElementById('hanwoo7d'));
 // 제목 옆 오늘 날짜(한국시간)

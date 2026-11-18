@@ -29,7 +29,8 @@ KST = timezone(timedelta(hours=9))
 MARKETS = [("0513", "음성"), ("0905", "고령"), ("0202", "부경")]
 SEXES = [("025003", "거세"), ("025001", "암소")]
 GRADES = [q + y for q in ("1++", "1+", "1", "2", "3") for y in "ABC"]  # 육질×육량 세부등급 15개, 등외 제외
-DAYS = 21  # 경매일 7일을 채우려면 주말·연휴를 넘어야 한다(2026 추석: 9/23~9/28 6일 연속 휴장 → 14일로는 6일뿐이었음)
+DAYS = 35  # 7일 표는 주말·연휴를 넘어야 채워지고(2026 추석 6일 연속 휴장), 한 달 추이 차트는 경매일 약 20일이 필요하다
+REFETCH_DAYS = 7  # 최근 이만큼만 매번 다시 받는다(값이 늦게 확정·정정될 수 있음). 그 이전은 저장된 값을 재사용해 호출 수를 아낀다
 OUT = Path(__file__).resolve().parent.parent / "data" / "hanwoo_7d.json"
 
 API_URL = "http://data.ekape.or.kr/openapi-data/service/user/grade/auct/cattlePriceDetail"
@@ -78,7 +79,7 @@ def parse_response(raw, ymd, sex_cd):
         if got != (BREED[1], API_SEX_NM[sex_cd], ymd):
             raise ApiError(f"요청과 다른 응답 {got}")
     if not any(r.get("auctCnt", "0") not in ("", "0") for r in rows):
-        return {"status": "closed", "grades": {g: None for g in GRADES}}
+        return {"status": "closed", "grades": {g: None for g in GRADES}, "total": None}
 
     detail = {r.get("gradeNm"): r for r in rows if r.get("gradeType") == "A"}  # A = 육질+육량 세부등급
     grades = {}
@@ -93,7 +94,21 @@ def parse_response(raw, ymd, sex_cd):
         if not 0 < lo <= amt <= hi:
             raise ApiError(f"{g} 가격 이상: 최저 {lo} 평균 {amt} 최고 {hi}")
         grades[g] = {"amt": round(amt), "cnt": int(r["auctCnt"])}
-    return {"status": "ok", "grades": grades}
+
+    # 전체 평균: gradeType E = 등외 제외 전체. 행이 아예 없거나, 세부등급 값은 있는데 E만 비어 있으면 응답이 이상한 것이다.
+    # 그날 등외만 거래돼 세부등급이 모두 비면 E도 비는 것이 정상(2026-10-23 고령 암소: 등외 1두) → total=None
+    tot = next((r for r in rows if r.get("gradeType") == "E"), None)
+    if tot is None:
+        raise ApiError("등외제외 전체 평균 행(E) 없음")
+    if not tot.get("auctAmt"):
+        if any(grades.values()):
+            raise ApiError("세부등급 값은 있는데 등외제외 전체 평균(E)이 비어 있음")
+        return {"status": "ok", "grades": grades, "total": None}
+    t_amt, t_lo, t_hi = float(tot["auctAmt"]), float(tot["minAuctAmt"]), float(tot["maxAuctAmt"])
+    if not 0 < t_lo <= t_amt <= t_hi:
+        raise ApiError(f"전체 평균 가격 이상: 최저 {t_lo} 평균 {t_amt} 최고 {t_hi}")
+    total = {"amt": round(t_amt), "cnt": int(tot["auctCnt"])}
+    return {"status": "ok", "grades": grades, "total": total}
 
 
 def fetch_day(key, ymd, market_cd, sex_cd):
@@ -108,7 +123,7 @@ def fetch_day(key, ymd, market_cd, sex_cd):
 def fetch_day_dummy(ymd, market_cd, sex_cd):
     rnd = random.Random(f"{ymd}{market_cd}{sex_cd}")
     if datetime.strptime(ymd, "%Y%m%d").weekday() >= 5:
-        return {"status": "closed", "grades": {g: None for g in GRADES}}
+        return {"status": "closed", "grades": {g: None for g in GRADES}, "total": None}
     base = 29000 if sex_cd == "025003" else 27000
     grades = {}
     for i, g in enumerate(GRADES):
@@ -116,7 +131,10 @@ def fetch_day_dummy(ymd, market_cd, sex_cd):
             grades[g] = None
         else:
             grades[g] = {"amt": base - i * 900 + rnd.randint(-500, 500), "cnt": rnd.randint(1, 50)}
-    return {"status": "ok", "grades": grades}
+    rows = [v for v in grades.values() if v]
+    cnt = sum(v["cnt"] for v in rows)
+    total = {"amt": round(sum(v["amt"] * v["cnt"] for v in rows) / cnt), "cnt": cnt} if cnt else None
+    return {"status": "ok", "grades": grades, "total": total}
 
 
 TRANSIENT = (urllib.error.URLError, TimeoutError, ConnectionError, ET.ParseError)
@@ -142,11 +160,13 @@ def fetch_with_retry(fetcher, ymd, market_cd, sex_cd):
 def describe(res):
     if res["status"] != "ok":
         return res["status"]
-    return "  ".join(f"{g} {v['amt']:,}({v['cnt']})" if v else f"{g} –" for g, v in res["grades"].items())
+    line = "  ".join(f"{g} {v['amt']:,}({v['cnt']})" if v else f"{g} –" for g, v in res["grades"].items())
+    t = res.get("total")
+    return line + (f"  | 전체 {t['amt']:,}({t['cnt']})" if t else "")
 
 
-def collect(dates, fetcher, prev):
-    """날짜 × 시장 × 성별을 모두 호출한다. 한 칸이 실패해도 멈추지 않고, 이전에 받은 값이 있으면 그것을 유지한다.
+def collect(dates, fetcher, prev, refetch=None):
+    """날짜 × 시장 × 성별을 모두 호출한다. refetch(날짜 집합)를 주면 그 밖의 날짜는 이전에 받은 정상·휴장 값(전체 평균 total 포함)이 있을 때 호출 없이 재사용한다. 한 칸이 실패해도 멈추지 않고, 이전에 받은 값이 있으면 그것을 유지한다.
     단 연속 ABORT_AFTER건 실패면 Abort — 키가 틀렸거나 API가 내려간 것이니 끝까지 돌 이유가 없다."""
     fetches, errors, streak = [], 0, 0
     names = {**dict(MARKETS), **dict(SEXES)}
@@ -154,6 +174,11 @@ def collect(dates, fetcher, prev):
         for m_cd, _ in MARKETS:
             for s_cd, _ in SEXES:
                 label = f"{ymd} {names[m_cd]} {names[s_cd]}"
+                old = prev.get((ymd, m_cd, s_cd))
+                if refetch is not None and ymd not in refetch and old and old.get("status") in ("ok", "closed") and "total" in old:
+                    fetches.append({"date": ymd, "market": m_cd, "sex": s_cd, "status": old["status"], "grades": old["grades"],
+                                    "total": old["total"]})
+                    continue
                 try:
                     res = fetch_with_retry(fetcher, ymd, m_cd, s_cd)
                     log.info("%s  %s", label, describe(res))
@@ -167,7 +192,7 @@ def collect(dates, fetcher, prev):
                     old = prev.get((ymd, m_cd, s_cd))
                     if old and old.get("status") in ("ok", "closed"):
                         log.warning("%s  실패 → 이전 값 유지 (%s)", label, why)
-                        res = {"status": old["status"], "grades": old["grades"], "reused": True}
+                        res = {"status": old["status"], "grades": old["grades"], "total": old.get("total"), "reused": True}
                     else:
                         log.error("%s  실패 (%s)", label, why)
                         res = {"status": "error", "grades": None, "error": why}
@@ -307,7 +332,7 @@ def main(argv=None):
     log.info("수집 시작 %s~%s, %d건 (%s)", dates[0], dates[-1], total, "가짜" if args.dummy else "실제 API")
     prev = {} if args.dummy else load_prev(args.out)
     try:
-        fetches, errors = collect(dates, fetcher, prev)
+        fetches, errors = collect(dates, fetcher, prev, refetch=set(dates[-REFETCH_DAYS:]))
     except Abort as e:
         log.error("%s. 기존 파일은 그대로 둡니다.", e)
         return 1
