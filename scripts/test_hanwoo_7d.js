@@ -118,51 +118,57 @@ const tdata = (() => {
 })();
 const tnow = kst(2026, 10, 6, 10, 0), tsel = { market: 'M', sex: 'S' };
 
-t('추이: 30일 밖 날짜 제외, 묶음은 두수 가중평균, 값 없는 날은 null', () => {
+t('추이: 30일 밖 날짜 제외, 묶음은 1++·1+·1만(2·3등급 없음), 두수 가중평균, 값 없는 날은 null', () => {
   const tr = h.trend(tdata, tnow, tsel);
   assert.deepEqual(tr.dates, ['20261001', '20261002', '20261005']);
+  assert.deepEqual(tr.groups.map(g => g.key), ['1++', '1+', '1']);
   const g1 = tr.groups.find(g => g.key === '1++');
   assert.equal(g1.points[0].avg, 22500, '(30000*1 + 20000*3) / 4');
   assert.equal(g1.points[1].avg, 33000, '한 등급만 있는 날은 그 값');
   assert.equal(g1.points[2].avg, 30000, '(36000 + 24000) / 2');
-  const g3 = tr.groups.find(g => g.key === '3');
-  assert.ok(g3.points.every(p => p === null), '등급이 아예 없는 묶음은 전부 null(0 아님)');
+  assert.ok(tr.groups.find(g => g.key === '1').points.every(p => p === null), '등급이 아예 없는 묶음은 전부 null(0 아님)');
 });
-t('추이: 변동률은 각 선의 첫 값을 0%로, 펼치면 A·B·C 줄', () => {
-  const tr = h.trend(tdata, tnow, tsel);
-  const rate = h.trendSeries(tr, 'rate', null).find(s => s.label === '1++');
-  assert.equal(rate.points[0].v, 0);
-  assert.ok(Math.abs(rate.points[2].v - (30000 / 22500 - 1) * 100) < 1e-9);
-  const ex = h.trendSeries(tr, 'price', '1++');
-  assert.deepEqual(ex.map(s => s.label), ['1++A', '1++B']);
-  assert.equal(h.trendSeries(tr, 'price', null).length, 5);
-});
-t('추이: 전체(등외제외) 평균 선 — API 값 그대로, total 없는 날은 null, 항상 마지막 선', () => {
+t('추이: 전체(등외제외) 평균은 API 값 그대로, total 없는 날은 null', () => {
   const d = JSON.parse(JSON.stringify(tdata));
   d.fetches.find(f => f.date === '20261001').total = { amt: 25501, cnt: 270 };
   d.fetches.find(f => f.date === '20261005').total = { amt: 26000, cnt: 6 };
   // 20261002는 total 키 없음(옛 저장분)
   const tr = h.trend(d, tnow, tsel);
   assert.deepEqual(tr.total.points.map(p => p && p.avg), [25501, null, 26000]);
-  const ser = h.trendSeries(tr, 'price', null);
-  assert.equal(ser.length, 6, '5묶음 + 전체');
-  assert.equal(ser[5].label, '전체'); assert.equal(ser[5].total, true);
-  assert.equal(h.trendSeries(tr, 'price', '1++').slice(-1)[0].label, '전체', '세부등급을 펼쳐도 전체 선은 남는다');
-  const svg = h.renderTrend(tr, 'price', null);
-  assert.ok(svg.includes('stroke-width="3.5"') && svg.includes('>전체<'));
-  assert.ok(h.trendLegend(tr, null).includes('h7d-lg-total') && h.trendLegend(tr, null).includes('26,000'));
-  assert.ok(!h.trendLegend(h.trend(tdata, tnow, tsel), null).includes('h7d-lg-total'), 'total이 전혀 없으면 칩을 만들지 않는다');
 });
-t('추이: SVG에 선·날짜 칸 생성, 평균 없는 묶음은 선 없음, 데이터 부족하면 안내 문구', () => {
-  const tr = h.trend(tdata, tnow, tsel);
-  const svg = h.renderTrend(tr, 'price', null);
-  assert.equal((svg.match(/<path /g) || []).length, 2, '데이터 있는 묶음(1++, 1+)만 선');
-  assert.equal((svg.match(/class="hit"/g) || []).length, 3);
-  assert.ok(h.renderTrend({ dates: ['20261001'], groups: tr.groups }, 'price', null).includes('부족'));
-  assert.ok(h.trendTooltip(tr, 'price', null, 0).includes('22,500원 · 4두'));
-  const lg = h.trendLegend(tr, '1++');
-  assert.ok(lg.includes('data-key="1++" aria-pressed="true"') && lg.includes('▲'));
-  assert.equal(h.niceStep(7000), 2000);
+t('추이 줄: 전체 → 1++ → 1+ 순, 첫값·마지막값·변동률, 값이 하루도 없는 줄은 뺌', () => {
+  const d = JSON.parse(JSON.stringify(tdata));
+  d.fetches.find(f => f.date === '20261001').total = { amt: 25000, cnt: 10 };
+  d.fetches.find(f => f.date === '20261005').total = { amt: 26000, cnt: 6 };
+  const rows = h.trendRows(h.trend(d, tnow, tsel));
+  assert.deepEqual(rows.map(r => r.key), ['total', '1++', '1+'], '1등급은 값이 없어 제외');
+  assert.equal(rows[0].first, 25000); assert.equal(rows[0].last, 26000);
+  assert.ok(Math.abs(rows[0].pct - 4) < 1e-9);
+  assert.equal(rows[1].first, 22500); assert.equal(rows[1].last, 30000);
+  assert.ok(Math.abs(rows[1].pct - (30000 / 22500 - 1) * 100) < 1e-9);
+  assert.equal(rows[2].label, '1+ 등급');
+  assert.deepEqual(h.trendRows(h.trend(tdata, tnow, tsel)).map(r => r.key), ['1++', '1+'], 'total이 전혀 없으면 전체 줄도 없음');
+});
+t('시작→현재 차트: 줄마다 동그라미 2개와 ▲▼%, 데이터 없으면 안내 문구', () => {
+  const d = JSON.parse(JSON.stringify(tdata));
+  d.fetches.find(f => f.date === '20261001').total = { amt: 25000, cnt: 10 };
+  d.fetches.find(f => f.date === '20261005').total = { amt: 26000, cnt: 6 };
+  const svg = h.renderDumbbell(h.trend(d, tnow, tsel));
+  assert.equal((svg.match(/<circle/g) || []).length, 6, '줄 3개 × 2');
+  assert.ok(svg.includes('▲4.0%') && svg.includes('22,500') && svg.includes('30,000') && svg.includes('전체') && svg.includes('1++ 등급'));
+  assert.ok(!svg.includes('2 등급') && !svg.includes('3 등급'));
+  const none = { dates: ['20261001'], groups: [], total: { key: 'total', label: '전체', color: '#000', points: [null] } };
+  assert.ok(h.renderDumbbell(none).includes('부족'));
+});
+t('작은 차트 모음: 줄 수만큼 칸, 전체 칸은 기준 점선 없음·등급 칸은 점선, 값 없으면 안내', () => {
+  const d = JSON.parse(JSON.stringify(tdata));
+  d.fetches.find(f => f.date === '20261001').total = { amt: 25000, cnt: 10 };
+  d.fetches.find(f => f.date === '20261005').total = { amt: 26000, cnt: 6 };
+  const html = h.renderMinis(h.trend(d, tnow, tsel));
+  assert.equal((html.match(/class="h7d-mini"/g) || []).length, 3);
+  assert.equal((html.match(/stroke-dasharray/g) || []).length, 2, '전체 칸 제외, 등급 칸 2개에만 전체 기준 점선');
+  assert.ok(html.includes('<b>26,000</b>') && html.includes('<b>30,000</b>'));
+  assert.ok(h.renderMinis({ dates: ['20261001'], groups: [], total: { key: 'total', label: '전체', color: '#000', points: [null] } }).includes('부족'));
 });
 
 console.log(`\n${n}개 모두 통과`);
